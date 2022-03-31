@@ -9,7 +9,9 @@ function [packet] = macframe_to_L3(mac_frame)
 % |               |              |              |              |              |(2 bytes)|          |(2 bytes)| (4 bytes)| 0-7951 bytes  |           |
 % |_______________|______________|______________|______________|______________|_________|__________|_________|__________|_______________|___________|
 % remove extra bits and return the Layer 3 packet
-data=mac_frame(12*8+1:end);
-len = bi2de(data(1:16),'left-msb');
-packet=(17:16+len);
+% data=mac_frame(12*8+1:end);
+% len = bi2de(data(1:16),'left-msb');
+% packet=(17:16+len);
+% size(mac_frame)
+packet=mac_frame(end-128*8-4*8+1:end-4*8);
 end

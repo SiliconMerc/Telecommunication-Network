@@ -16,6 +16,6 @@ function [raw] = mac_to_phy(mac_frame)
 preamble = mod((1:16*8),2);
 sfd = [mod(1:2*8, 2) 1];
 len=de2bi(size(mac_frame,2),'left-msb',16);%row vector padded to 16 bits which is equal to length of mac_frame
-signal=[1 1 1 1 0 len 1 0 0 0 0 0 0 ]
+signal=[1 1 1 1 0 len 1 0 0 0 0 0 0 ];
 raw=[preamble sfd signal mac_frame]';
 end

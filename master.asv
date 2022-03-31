@@ -6,10 +6,8 @@ path="cat.mp4";
 %read video
 vidObj = VideoReader(path);
 % t=1.0/vidObj.FrameRate:1.0/vidObj.FrameRate:vidObj.Duration;
-% t=[1];
-% t=1.0/vidObj.FrameRate:1:vidObj.Duration;
-t=1.0/vidObj.FrameRate:1:20;
-
+t=[1];
+%t=1.0/vidObj.FrameRate:1:vidObj.Duration;
 
 eof=false;
 
@@ -111,49 +109,43 @@ f = waitbar(0,'Please wait...');
         txData=double(bits);
         %packetization 
         % Encapsulation : The process of encapsulating the data received from upper layers of the network(also called as payload) in a network layer packet at the source
-        [mac_phy_frame_buff,mac_frame_buff,phy_frame_buff]= encapsulating_packetization(txData,frameSize,crcgenerator);
-        rx_frame_buff=[];
+%         mac_phy_frame_buff,mac_frame_buff,phy_frame_buff= encapsulating_packetization(txData,frameSize,crcgenerator);
         
+%         rx_frame_buff=[];
 %         [Q,R]=quorem(sym(size(txData,1)),sym(frameSize(1)));
 %         rows=frameSize(1);
 %         cols=double(Q)+1;
 %         mac_phy_frame_buff=zeros(rows,cols);
 %         mac_phy_frame_buff(1:size(txData,1))=txData(:);
-        for txData=mac_phy_frame_buff
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%modulation%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %3.1)Apply the defined modulation scheme
-            %4.1)Apply OFDM modulation on BPSK/PSK/QAM modulated data
-            modData = bpskModulator(txData); %Apply BPSK modulation
-            txSig = ofdmMod(modData);% Apply OFDM modulation
-
-            %figure(1);
-            %scatterplot(modData);
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%channel%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %5)Apply the channel channel characteristics on modulated signal
-            %rxSig = awgn(modData,10);                % Pass through AWGN
-            powerDB = 10*log10(var(txSig));               % Calculate Tx signal power
-            noiseVar = 10.^(0.1*(powerDB-snr));           % Calculate the noise variance
-            rxSig = channel(txSig,noiseVar);              % Pass the signal through a noisy channel
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%demodulation%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %4.2)Apply OFDM demodulation on received signal
-            %3.2)Apply the defined demodulation scheme
-            bpskRx = ofdmDemod(rxSig);                    % Apply OFDM demodulation
-            rxData = bpskDemodulator(bpskRx);       % Demodulate
-            %figure(2);
-            %scatterplot(rxData);
-            errorStats = errorRate(txData,rxData); % Collect error stats
-            %fprintf('Error rate = %f\nNumber of errors = %d\n',errorStats(1), errorStats(2));
-            rx_frame_buff=[rx_frame_buff rxData];
-        end
-        [bits,err,recovered_mac_buff,recovered_phy_buff] = decapsulating_packetization (rx_frame_buff,size(bits,1),crcdetector);
-        %size(phy_frame_buff)
-        %size(recovered_phy_buff)
-        
-        %isequal(phy_frame_buff,recovered_phy_buff)
-        %bits(1:20)
-        %txData(1:20)
-%         isequal(bits',txData)
-%         break
+%         for txData=mac_phy_frame_buff
+%             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%modulation%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%             %3.1)Apply the defined modulation scheme
+%             %4.1)Apply OFDM modulation on BPSK/PSK/QAM modulated data
+%             modData = bpskModulator(txData); %Apply BPSK modulation
+%             txSig = ofdmMod(modData);% Apply OFDM modulation
+% 
+%             %figure(1);
+%             %scatterplot(modData);
+%             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%channel%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%             %5)Apply the channel channel characteristics on modulated signal
+%             %rxSig = awgn(modData,10);                % Pass through AWGN
+%             powerDB = 10*log10(var(txSig));               % Calculate Tx signal power
+%             noiseVar = 10.^(0.1*(powerDB-snr));           % Calculate the noise variance
+%             rxSig = channel(txSig,noiseVar);              % Pass the signal through a noisy channel
+%             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%demodulation%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%             %4.2)Apply OFDM demodulation on received signal
+%             %3.2)Apply the defined demodulation scheme
+%             bpskRx = ofdmDemod(rxSig);                    % Apply OFDM demodulation
+%             rxData = bpskDemodulator(bpskRx);       % Demodulate
+%             %figure(2);
+%             %scatterplot(rxData);
+%             errorStats = errorRate(txData,rxData); % Collect error stats
+%             %fprintf('Error rate = %f\nNumber of errors = %d\n',errorStats(1), errorStats(2));
+%             rx_frame_buff=[rx_frame_buff rxData];
+%         end
+%         bits,err,recovered_mac_buff,recovered_phy_buff = decapsulating_packetization (mac_phy_frame_buff,size(bits,1),crcdetector);
+%         size(mac_frame_buff)
+        size(recovered_mac_buff)
 %         isequal(bits,txData)
 %         bits(1:100)==txData(1:100)
 %         stem(bits(1:100)==txData(1:100))

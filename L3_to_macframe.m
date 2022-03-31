@@ -22,21 +22,24 @@ function [mac_frame] = L3_to_macframe(dest_addr, src_addr, packet, crcgenerator)
 % transmission was accurate or erroneous.
 % For 4-byte (32 bit) CRC calculation, use CRC32 algorithm.
 d=randi(255,1,2);%creating random packet of 2 bytes
-b = de2bi(d,'left-msb')';%converting to binary(column vector) where eight bits mean a number
+b = de2bi(d,'left-msb',8*2)';%converting to binary(column vector) where eight bits mean a number
 fc=b(:)';
 d=randi(255,1,6);%creating random packet of 6 bytes
-b = de2bi(d,'left-msb')';%converting to binary(column vector) where eight bits mean a number
+b = de2bi(d,'left-msb',8*6)';%converting to binary(column vector) where eight bits mean a number
 addr_3=b(:)';
 d=randi(255,1,2);%creating random packet of 6 bytes
-b = de2bi(d,'left-msb')';%converting to binary(column vector) where eight bits mean a number
+b = de2bi(d,'left-msb',8*2)';%converting to binary(column vector) where eight bits mean a number
 sq=b(:)';
 addr_4=addr_3;
 qos=fc;
 d=randi(255,1,4);%creating random packet of 4 bytes
-b = de2bi(d,'left-msb')';%converting to binary(column vector) where eight bits mean a number
+b = de2bi(d,'left-msb',8*4)';%converting to binary(column vector) where eight bits mean a number
 ht=b(:)';
 len=de2bi(size(packet,2),'left-msb',16);%getting a binary column vector that is padded to 16 bits , representing the length of packet
 data=[fc len dest_addr src_addr addr_3 sq addr_4 qos ht packet'];
-size(data)
+% size(fc)
+% size(len)
+% size(data)
 mac_frame = crcgenerator(data')';%packet + crc output
+%size(mac_frame)
 end
