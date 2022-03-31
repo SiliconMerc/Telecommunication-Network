@@ -1,4 +1,3 @@
-
 %1)Load the audio/image
 % The loaded audio has analog values that need to be restricted to a range
 % for proper encoding
@@ -6,13 +5,17 @@
 path="cat.mp4";
 %read video
 vidObj = VideoReader(path);
-t=1.0/vidObj.FrameRate:1:vidObj.Duration;
+% t=1.0/vidObj.FrameRate:1.0/vidObj.FrameRate:vidObj.Duration;
+% t=[1]
+t=1.0/vidObj.FrameRate:1:20;
+
 eof=false;
 
 %write video
 v = VideoWriter('cats2.avi');
 v.FrameRate = vidObj.FrameRate;
 open(v);
+%%
 %%
 % CRC is called cyclic redundancy check. It is used for checking if the
 % transmission was accurate or erroneous.
@@ -30,6 +33,7 @@ crcgenerator=comm.CRCGenerator(poly);
 % 2.2) After generating a CRCGenerator above, create a CRCDetector Object for
 % error detection here.
 crcdetector=comm.CRCDetector(poly);
+%%
 
 %3) modulation
 %Declare modulation/demodulation schemes to convert the data to signal
@@ -45,11 +49,12 @@ bpskDemodulator = comm.BPSKDemodulator;
 % k = log2(M);           % Bits/symbol
 % qpskMod = comm.QPSKModulator('BitInput',true);
 % qpskDemod = comm.QPSKDemodulator('BitInput',true);
+%%
 
 %4) ofdm
 %Declare the OFDM modulator and demodulator with the following parameters
 %Hint:comm.OFDMModulator
-numSC = 64;           % Number of OFDM subcarriers
+numSC = 52;           % Number of OFDM subcarriers
 cpLen = 32;            % OFDM cyclic prefix length
 maxBitErrors = 100;    % Maximum number of bit errors
 maxNumBits = 1e7;      % Maximum number of bits transmitted
@@ -58,7 +63,7 @@ ofdmDemod = comm.OFDMDemodulator('FFTLength',numSC,'CyclicPrefixLength',cpLen);
 ofdmDims = info(ofdmMod)
 numDC = ofdmDims.DataInputSize(1)
 frameSize = [k*numDC 1];
-
+%%
 %5) channel
 %The channel has to be modeled as awgn with SNR 10dB
 channel = comm.AWGNChannel('NoiseMethod','Variance', ...
@@ -73,10 +78,12 @@ errorStats = zeros(1,3);
 %progess
 f = waitbar(0,'Please wait...');
 
-for m = 1:length(EbNoVec)
+%%
+
+% for m = 1:length(EbNoVec)
+    m=1;
     snr = snrVec(m);
     for time = t
-        waitbar(time/vidObj.Duration,f,sprintf('Processing %f / %f , Error rate : %f ',time,vidObj.Duration,errorStats(1)));
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Input%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %get video frame from file
         vidObj.CurrentTime=time;
@@ -102,9 +109,14 @@ for m = 1:length(EbNoVec)
         txData=double(bits);
         %packetization 
         % Encapsulation : The process of encapsulating the data received from upper layers of the network(also called as payload) in a network layer packet at the source
-        mac_frame_buff= encapsulating_packetization (data,frameSize,crcgenerator)
-        rx_frame_buff=[]
-        for txData=mac_frame_buff
+        %mac_phy_frame_buff= encapsulating_packetization(txData,frameSize,crcgenerator)
+        rx_frame_buff=[];
+        [Q,R]=quorem(sym(size(txData,1)),sym(frameSize(1)));
+        rows=frameSize(1);
+        cols=double(Q)+1;
+        mac_phy_frame_buff=zeros(rows,cols);
+        mac_phy_frame_buff(1:size(txData,1))=txData(:);
+        for txData=mac_phy_frame_buff
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%modulation%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %3.1)Apply the defined modulation scheme
             %4.1)Apply OFDM modulation on BPSK/PSK/QAM modulated data
@@ -122,16 +134,20 @@ for m = 1:length(EbNoVec)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%demodulation%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %4.2)Apply OFDM demodulation on received signal
             %3.2)Apply the defined demodulation scheme
-            qpskRx = ofdmDemod(rxSig);                    % Apply OFDM demodulation
-            rxData = bpskDemodulator(rxSig);       % Demodulate
+            bpskRx = ofdmDemod(rxSig);                    % Apply OFDM demodulation
+            rxData = bpskDemodulator(bpskRx);       % Demodulate
             %figure(2);
             %scatterplot(rxData);
-            errorStats = errorRate(txData,rxData,0); % Collect error stats
+            errorStats = errorRate(txData,rxData); % Collect error stats
             %fprintf('Error rate = %f\nNumber of errors = %d\n',errorStats(1), errorStats(2));
-            rx_frame_buff=[rx_frame_buff rxData]
+            rx_frame_buff=[rx_frame_buff rxData];
         end
-        bits = decapsulating_packetization (rx_frame_buff,dataSize,crcdetector)
+        %bits = decapsulating_packetization (rx_frame_buff,dataSize,crcdetector)
+        isequal(bits,rx_frame_buff(1:size(bits,1)));
+        bits=rx_frame_buff(1:size(bits,1));
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%transmission%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
         %convert bits to group of 8
         bits=reshape(bits,8,[])';
 
@@ -145,19 +161,19 @@ for m = 1:length(EbNoVec)
         % path="cat.mp4";
         % vidObj = VideoReader(path);
 
-%         if eof
-%             close(v);
-%         else
-%         % for i = time
-%         % vidObj.CurrentTime=i
-%         % frame = readFrame(vidObj);
-%         %imshow(frame);
-%         % frame=imresize(frame,[64 64]);
-%         % imshow(frame);
-%         % size(frame);
-%             frame= im2frame(image);
-%             writeVideo(v,frame);
-%         end
+        if eof
+            close(v);
+        else
+        % for i = time
+        % vidObj.CurrentTime=i
+        % frame = readFrame(vidObj);
+        %imshow(frame);
+        % frame=imresize(frame,[64 64]);
+        % imshow(frame);
+        % size(frame);
+            frame= im2frame(image);
+            writeVideo(v,frame);
+        end
         
         % 9) If correct message received, send ACK else NACK from the receiver.
         % ack is the 7 bit sequence 000 0110
@@ -180,20 +196,23 @@ for m = 1:length(EbNoVec)
 %         elseif(all(received_cnfrm(2:8)==nack))
 %             fprintf ( "Fail");    
 %         end
+         waitbar(time/vidObj.Duration,f,sprintf('Processing %f / %f , Error rate : %f ',time,vidObj.Duration,errorStats(1)));
     end
     berVec(m,:) = errorStats;                         % Save BER data
-    errorStats = errorRate(txData,rxData,1);         % Reset the error rate calculator
-end
-berTheory = berawgn(EbNoVec,'psk',M,'nondiff');
+    reset(errorRate)        % Reset the error rate calculator
+% end
+%%
 
-figure
-semilogy(EbNoVec,berVec(:,1),'*')
-hold on
-semilogy(EbNoVec,berTheory)
-legend('Simulation','Theory','Location','Best')
-xlabel('Eb/No (dB)')
-ylabel('Bit Error Rate')
-grid on
-hold off
+% berTheory = berawgn(EbNoVec,'psk',M,'nondiff');
+% 
+% figure
+% semilogy(EbNoVec,berVec(:,1),'*')
+% hold on
+% semilogy(EbNoVec,berTheory)
+% legend('Simulation','Theory','Location','Best')
+% xlabel('Eb/No (dB)')
+% ylabel('Bit Error Rate')
+% grid on
+% hold off
 close(v);
 close(f);

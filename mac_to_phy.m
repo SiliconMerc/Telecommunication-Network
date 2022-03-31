@@ -13,8 +13,9 @@ function [raw] = mac_to_phy(mac_frame)
 % Length: indicates the size of the frame, protected by a convolution code.
 %Parity bit and reserved bit: bit 4 is reserved for future use and is set to 0. The parity bit applies to the first 16 bits of the “signal” field(Rate+Reserved+Length+Parity+Tail) to protect them against errors.
 %Tail: end field over 6 bits (000000).
-preamble = mod((1:56),2);
-sfd = [mod(1:7, 2) 1];
+preamble = mod((1:16*8),2);
+sfd = [mod(1:2*8, 2) 1];
 len=de2bi(size(mac_frame,2),'left-msb',16);%row vector padded to 16 bits which is equal to length of mac_frame
-raw=[preamble sfd len mac_frame];
+signal=[1 1 1 1 0 len 1 0 0 0 0 0 0 ]
+raw=[preamble sfd signal mac_frame]';
 end
