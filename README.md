@@ -85,3 +85,35 @@ https://in.mathworks.com/help/comm/gs/qpsk-and-ofdm-with-matlab-system-objects-1
 
 https://rfmw.em.keysight.com/wireless/helpfiles/n7617a/ofdm_signal_structure.htm 
 
+https://in.mathworks.com/help/matlab/matlab_external/install-supported-python-implementation.html#bujjwjn
+
+https://in.mathworks.com/help/matlab/ref/pyenv.html 
+
+Install 64 bit python
+
+```
+pcPythonExe = 'C:\Users\dmattioli\AppData\Local\Programs\Python\Python37\python.exe';
+[ver, exec, loaded]	= pyversion(pcPythonExe); pyversion
+>> pyversion
+       version: '3.7'
+    executable: 'C:\Users\dmattioli\AppData\Local\Programs\Python\Python37\python.exe'
+       library: 'C:\Users\dmattioli\AppData\Local\Programs\Python\Python37\python37.dll'
+          home: 'C:\Users\dmattioli\AppData\Local\Programs\Python\Python37'
+      isloaded: 1
+% Add folders to python system path.
+pyLibraryFolder = 'C:\Users\dmattioli\.PyCharm2019.1\system\python_stubs\278535617';
+insert(py.sys.path, int64(0), pyLibraryFolder)
+```
+
+https://github.com/kodonnell/qoi
+
+Add to path
+
+C:\Users\prana\AppData\Local\Programs\Python\Python36
+
+C:\Users\prana\AppData\Local\Programs\Python\Python36\Scripts
+
+pip install qoi opencv-python
+
+https://in.mathworks.com/help/matlab/matlab_external/call-user-defined-custom-module.html
+

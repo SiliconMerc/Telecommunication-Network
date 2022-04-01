@@ -47,6 +47,7 @@ function [mac_phy_frame_buff,mac_frame_buff,packet_buff] = encapsulating_packeti
         %size(phy_frame_buff)
         %size(raw)
         phy_frame_buff=[phy_frame_buff raw];
+        
     end
     size(phy_frame_buff);
     % we have to make the raw an integer multiple of frameSize , even if we

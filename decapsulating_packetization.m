@@ -17,17 +17,15 @@ function [bits,err,recovered_mac_buff,bits_buff] = decapsulating_packetization (
         recovered_mac = phy_to_mac(demodulated);
         recovered_mac_buff=[recovered_mac_buff recovered_mac];
 %         recovered_mac(1:10)
-        % 8) check the accuracy using CRC.
-        % use crcdetector defined above
-        %[msg,error]=crcdetector(recovered_mac');
-        error=0;
         %%
         % 8.1) extract the Level 3 packet from mac_frame (macframe_to_L3.m)
         %mac_frame==recovered_mac
-        recovered_packet= macframe_to_L3(recovered_mac);
+        [recovered_packet,error]= macframe_to_L3(recovered_mac,crcdetector);
+        
         recovered_packet(1:10);
         bits_buff=[bits_buff recovered_packet];
         err=[err error];
+        
 %         break
     end
     size(bits_buff(:));

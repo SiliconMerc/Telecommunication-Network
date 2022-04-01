@@ -1,4 +1,4 @@
-function [packet] = macframe_to_L3(mac_frame)
+function [packet,error] = macframe_to_L3(mac_frame,crcdetector)
 % MACFRAME_TO_L3 Brief summary of this function.
 % 
 % Detailed explanation of this function.
@@ -13,5 +13,9 @@ function [packet] = macframe_to_L3(mac_frame)
 % len = bi2de(data(1:16),'left-msb');
 % packet=(17:16+len);
 % size(mac_frame)
-packet=mac_frame(end-128*8-4*8+1:end-4*8);
+%packet=mac_frame(end-128*8-4*8+1:end-4*8);
+data=mac_frame(end-128*8-4*8+1:end);
+% 8) check the accuracy using CRC.
+% use crcdetector defined above
+[packet,error]=crcdetector(data);
 end
