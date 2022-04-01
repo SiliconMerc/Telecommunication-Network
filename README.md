@@ -34,9 +34,9 @@ We approximately follow the IEEE 802.11 standard for wireless communication and 
 
 ### Basic MAC Frame Format
 
-![img](./images/pasted image 3.png)
+![img](./images/pasted-image-3.png)
 
-![img](./images/pasted image 2.png)
+![img](./images/pasted-image-2.png)
 
 References:
 
@@ -50,9 +50,9 @@ References:
 
 #### Basic PHY Frame Structure
 
-![img](./images/pasted image 1.png)
+![img](./images/pasted-image-1.png)
 
-![img](./images/pasted image 0.png)
+![img](./images/pasted-image-0.png)
 
 References : 
 
