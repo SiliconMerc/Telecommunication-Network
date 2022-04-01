@@ -24,6 +24,7 @@ def myfunc2(path):
 
     # Likewise for encode/decode to/from bytes:
     bites = qoi.encode(rgb)
+    print(bites)
     rgb_decoded = qoi.decode(bites)
     assert np.array_equal(rgb, rgb_decoded)
 myfunc2("C:\\Users\\prana\\OneDrive\\Pictures\\Camera Roll\\WIN_20210620_10_51_31_Pro.jpg")

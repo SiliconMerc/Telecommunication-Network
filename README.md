@@ -1,36 +1,6 @@
 # Telecommunication-Network
 
-Global catastrophic risks that threaten to destroy or cripple 
-
-human civilization. What lies beneath day-to-day reality is 
-
-a fantastically complex web of phenomena. Perturb that web, 
-
-poke it or shove it, and there are ripples that don’t always 
-
-settle quickly. 
-
-Planetary climate is one major structural element of the web, and is 
-
-perfectly happy to ripple and slide over to states that modern humans 
-
-I haven't experienced this before. 
-
-The humans by this time have decided to make an interstellar colony 
-
-with the launch of interplanetary or interstellar spacecraft . 
-
-Communications with a growing population of exploration vehicles and settlements within a planetary system, or with probes launched to other stars, could also create a noisy beacon for other species to detect. 
-
-And perhaps the ultimate in last-ditch attempts to avert a slow-rolling planetary
-
-disaster is to send out a distress signal, looking for answers to existential
-
-challenges; because at that point why not?
-
-A group of Apocalyptic fanatics must use their knowledge of digital communication to save the world. You have been tasked to design and implement a transmitter and receiver system that is capable of achieving this task of making external contact.
-
-
+Global catastrophic risks that threaten to destroy or cripple human civilization. What lies beneath day-to-day reality is a fantastically complex web of phenomena. Perturb that web, poke it or shove it, and there are ripples that don’t always settle quickly.  Planetary climate is one major structural element of the web, and is perfectly happy to ripple and slide over to states that modern humans I haven't experienced this before.  The humans by this time have decided to make an interstellar colony with the launch of interplanetary or interstellar spacecraft . Communications with a growing population of exploration vehicles and settlements within a planetary system, or with probes launched to other stars, could also create a noisy beacon for other species to detect. And perhaps the ultimate in last-ditch attempts to avert a slow-rolling planetary disaster is to send out a distress signal, looking for answers to existential challenges; because at that point why not? A group of Apocalyptic fanatics must use their knowledge of digital communication to save the world. You have been tasked to design and implement a transmitter and receiver system that is capable of achieving this task of making external contact.
 
 After implementing the basic filter in [**PS1**](https://drive.google.com/file/d/1K-Q769eI4hD5HQTjU-G_cNm_K-4oOSci/view) you realize that the data speed and bit error rate is not up to the mark and now have to think about implementing something more scalable that does not interfere with others and also provides high data speed .
 
